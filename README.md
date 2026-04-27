@@ -1,4 +1,4 @@
-# 🐧 Linux Server Administration Practice
+# 🐧 Linux Server Administration Project
 > Rocky Linux 9.7 환경에서 서버 운영에 필요한 핵심 명령어 및 서비스 구성 실습
 
 <br>
