@@ -86,8 +86,8 @@ adduser lyh
 adduser jsh
 adduser jgh
 
-# 사용자 확인 (/etc/passwd 마지막 5행)
-tail -5 /etc/passwd
+# 사용자 확인 (/etc/passwd 마지막 8행)
+tail -8 /etc/passwd
 
 # 패스워드 설정
 passwd sonhm
@@ -115,7 +115,7 @@ usermod -g krsoccer lyh
 usermod -g krsoccer jsh
 usermod -g krsoccer jgh
 
-# 그룹 멤버로 추가 (보조 그룹)
+# 그룹 멤버로 추가
 gpasswd -a sonhm eusoccer
 gpasswd -a leegi eusoccer
 gpasswd -a kimmj eusoccer
@@ -143,8 +143,8 @@ tail /etc/group
 [LVM 구조]
 Physical Volume (PV)         Volume Group (VG)     Logical Volume (LV)
   /dev/sdb1 (20G)  ──┐
-  /dev/sdc1 (30G)  ──┼──▶  DATA (99G)  ──▶  VIDEO (40G)
-  /dev/sdd1 (50G)  ──┘                  └──▶  AUDIO (나머지 ~59G)
+  /dev/sdc1 (30G)  ──┼──▶  DATA (100G)  ──▶  VIDEO (40G)
+  /dev/sdd1 (50G)  ──┘                  └──▶  AUDIO (나머지)
 ```
 
 ### 디스크 확인
@@ -219,14 +219,18 @@ mkfs.ext4 /dev/sdb1
 mkdir /userHome
 mount /dev/sdb1 /userHome
 
-# 2. fstab에 쿼터 옵션 추가
-vi /etc/fstab
-# /dev/sdb1  /userHome  ext4  defaults,usrjquota=aquota.user,jqfmt=vfsv0  0 0
-
-# 3. 쿼터 전용 사용자 생성
+# 2. 쿼터 전용 사용자 생성
 useradd -d /userHome/aespa aespa
 useradd -d /userHome/IVE IVE
 useradd -d /userHome/NewJeans NewJeans
+
+passwd aespa
+passwd IVE
+passwd NewJeans
+
+# 3. fstab에 쿼터 옵션 추가
+vi /etc/fstab
+# /dev/sdb1  /userHome  ext4  defaults,usrjquota=aquota.user,jqfmt=vfsv0  0 0
 
 # 4. remount (재부팅 없이 fstab 적용)
 mount --options remount /userHome
@@ -288,9 +292,9 @@ firewall-cmd --list-services
 ### 5-2. XRDP Server (원격 데스크톱)
 
 ```bash
-# EPEL 저장소 추가 후 설치
+# XRDP 설치 여부 확인 및 설치
+rpm -qa xrdp
 dnf -y install epel-release
-dnf -y install xrdp
 
 # 서비스 시작
 systemctl start xrdp
@@ -515,7 +519,6 @@ systemctl enable smb nmb
 # 방화벽 허가
 firewall-cmd --permanent --add-service=samba
 firewall-cmd --permanent --add-service=samba-client
-firewall-cmd --reload
 
 # SELinux 설정
 setsebool -P samba_enable_home_dirs on
@@ -582,6 +585,11 @@ vi /var/named/history.com.db
 # IN  MX  10  mail.history.com
 # mail  IN  A  192.168.111.100
 
+# 오류 검사
+named-checkconf
+named-checkzone history.com history.com.db
+# OK
+
 # sendmail.cf 설정
 vi /etc/mail/sendmail.cf
 # 85: Cwhistory.com
@@ -592,16 +600,23 @@ vi /etc/mail/sendmail.cf
 vi /etc/mail/access
 # 192.168.111  RELAY
 # history.com  RELAY
+
+# Makemap hash
 makemap hash /etc/mail/access < /etc/mail/access
 
 # Dovecot 설정
 vi /etc/dovecot/dovecot.conf
 # protocols = imap pop3 lmtp submission
 # listen = *, ::
+# base_dir = /var/run/dovecot/
 
+# mail 수정
 vi /etc/dovecot/conf.d/10-mail.conf
 # mail_location = mbox:~/mail:INBOX=/var/mail/%u
+# mail_access_groups = mail
+# lock_method = fcnt1
 
+# ssl 수정
 vi /etc/dovecot/conf.d/10-ssl.conf
 # ssl = yes
 
