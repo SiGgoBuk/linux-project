@@ -96,6 +96,7 @@ passwd sonhm
 > 일반 사용자의 UID는 1000번부터 할당됨
 > 
 > `/etc/passwd` 구성: `계정명:암호:UID:GID:설명:홈디렉터리:로그인쉘`
+> 
 > `/etc/shadow` 구성: `계정명:암호:최종변경일:MIN:MAX:WARNING:INACTIVE:EXPIRE:Flag`
 
 ### 그룹 생성 및 사용자 포함
