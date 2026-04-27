@@ -11,7 +11,7 @@
 | **OS** | Rocky Linux 9.7 |
 | **환경** | VMware Workstation Pro 17 |
 | **구성** | VM 3대 (Project / Project-B / Project-C) |
-| **역할** | 조장 |
+| **역할** | 조장 — 챕터 분배, 발표 자료 구성 기획, PPT 검토 및 수정 |
 
 ### VM 사양
 
