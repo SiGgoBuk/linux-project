@@ -58,9 +58,14 @@ nmcli connection up ens160
 ip address
 ```
 
-### GUI 방식 (nmtui)
+### TUI 방식 (nmtui)
 ```bash
 nmtui  # TUI 환경에서 네트워크 설정
+```
+
+### GUI 방식 (nmtui)
+```bash
+# 우분투 GUI 환경에서 네트워크 설정
 ```
 
 <br>
